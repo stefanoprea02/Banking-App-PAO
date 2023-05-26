@@ -26,6 +26,13 @@ public class TransactionService {
         System.out.print("Enter sum : ");
         double sum = Double.parseDouble(scanner.nextLine());
 
+        /*
+        if(sender.getBalance() < sum){
+            System.out.println("Not enough funds.");
+            return;
+        }
+         */
+
         System.out.print("Enter description : ");
         String description = scanner.nextLine();
 
@@ -57,6 +64,36 @@ public class TransactionService {
             preparedStatement.setString(7, sender.getId());
             preparedStatement.setString(8, receiver.getId());
             preparedStatement.executeUpdate();
+            double newBalanceSender = sender.getBalance() - sum;
+            double newBalanceReceiver = receiver.getBalance() + sum;
+
+            if(senderType.equals("senderCheckingAccount_id")) {
+                String updateSender = "UPDATE checkingaccount SET balance = ? WHERE IBAN = ?";
+                preparedStatement = connection.prepareStatement(updateSender);
+                preparedStatement.setDouble(1, newBalanceSender);
+                preparedStatement.setString(2, sender.getIBAN());
+                preparedStatement.executeUpdate();
+            }else{
+                String updateSender = "UPDATE savingsAccount SET balance = ? WHERE IBAN = ?";
+                preparedStatement = connection.prepareStatement(updateSender);
+                preparedStatement.setDouble(1, newBalanceSender);
+                preparedStatement.setString(2, sender.getIBAN());
+                preparedStatement.executeUpdate();
+            }
+            if(receiverType.equals("receiverCheckingAccount_id")) {
+                String updateReceiver = "UPDATE checkingaccount SET balance = ? WHERE IBAN = ?";
+                preparedStatement = connection.prepareStatement(updateReceiver);
+                preparedStatement.setDouble(1, newBalanceReceiver);
+                preparedStatement.setString(2, receiver.getIBAN());
+                preparedStatement.executeUpdate();
+            }else{
+                String updateReceiver = "UPDATE savingsaccount SET balance = ? WHERE IBAN = ?";
+                preparedStatement = connection.prepareStatement(updateReceiver);
+                preparedStatement.setDouble(1, newBalanceReceiver);
+                preparedStatement.setString(2, receiver.getIBAN());
+                preparedStatement.executeUpdate();
+
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
