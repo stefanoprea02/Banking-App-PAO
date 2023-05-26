@@ -16,10 +16,6 @@ import java.util.Date;
 import java.util.Scanner;
 
 public class Main {
-    private static ArrayList<Account> accounts = new ArrayList<>();
-    private static ArrayList<Card> cards = new ArrayList<>();
-    private static ArrayList<Customer> customers = new ArrayList<>();
-    private static ArrayList<Statement> statements = new ArrayList<>();
     private static final CustomerService customerService = new CustomerService();
     private static final AccountService accountService = new AccountService();
     private static final StatementService statementService = new StatementService();
